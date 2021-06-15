@@ -1,0 +1,37 @@
+version: '3.8'
+
+networks:
+  default:
+
+services:
+  app:
+    build: ./docker/app
+    container_name: frontend_vue
+    volumes:
+      - ./frontend:/frontend
+    ports:
+      - '8080:8080'
+    stdin_open: true
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+    command: yarn serve
+    networks:
+      - default
+
+  api:
+    image: node:16.2.0-alpine3.11
+    container_name: backend_node
+    volumes:
+      - ./backend:/backend
+    ports:
+      - '3000:3000'
+    working_dir: /backend
+    stdin_open: true
+    tty: true
+    environment:
+      - TZ=Asia/Tokyo
+      - DEBUG=api:*
+    command: yarn start
+    networks:
+      - default
